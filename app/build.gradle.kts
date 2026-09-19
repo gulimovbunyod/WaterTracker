@@ -16,8 +16,6 @@ android {
         versionName = "1.0"
     }
 
-    // Bitta doimiy keystore - debug va release bir xil kalit bilan imzolanadi,
-    // shunda qayta build/yangilashda "signature mismatch" xatosi chiqmaydi.
     signingConfigs {
         create("release") {
             storeFile = file("${rootProject.projectDir}/keystore/release.keystore")
@@ -44,6 +42,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs += listOf("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
     }
     buildFeatures {
         compose = true
