@@ -12,18 +12,19 @@ interface DayRecordDao {
     @Query("SELECT * FROM day_records WHERE date = :date LIMIT 1")
     fun observeByDate(date: String): Flow<DayRecord?>
 
-    @Query("SELECT * FROM day_records ORDER BY date DESC LIMIT 31")
+    // 32 ta oxirgi yozuv olinadi: ulardan biri "bugungi kun" bo'lishi mumkin,
+    // uni UI qatlamida chiqarib tashlab, aniq 31 ta tugagan kunni ko'rsatamiz.
+    @Query("SELECT * FROM day_records ORDER BY date DESC LIMIT 32")
     fun observeRecent(): Flow<List<DayRecord>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(record: DayRecord)
 
-    // Faqat oxirgi 31 kunni saqlab qolish, qolganini o'chirish
     @Query(
         """
         DELETE FROM day_records
-        WHERE date NOT IN (SELECT date FROM day_records ORDER BY date DESC LIMIT 31)
+        WHERE date NOT IN (SELECT date FROM day_records ORDER BY date DESC LIMIT 32)
         """
     )
-    suspend fun trimToLast31()
+    suspend fun trimToLast32()
 }

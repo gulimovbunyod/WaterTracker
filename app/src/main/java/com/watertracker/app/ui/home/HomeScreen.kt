@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -22,11 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,18 +33,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.watertracker.app.ui.components.CustomAmountDialog
 import com.watertracker.app.ui.components.WaterProgressRing
 import com.watertracker.app.ui.theme.GreenStatus
 import com.watertracker.app.ui.theme.RedStatus
 import com.watertracker.app.util.DayStatus
+import kotlinx.coroutines.delay
+import java.time.LocalTime
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.uiState.collectAsState()
     var showGoalDialog by remember { mutableStateOf(false) }
     var showCustomDialog by remember { mutableStateOf(false) }
+
+    // Kun boshidan o'tgan/qolgan vaqt - status hisob-kitobidan MUSTAQIL,
+    // har daqiqada yangilanadigan alohida hisoblagich.
+    var now by remember { mutableStateOf(LocalTime.now()) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            now = LocalTime.now()
+            delay(60_000)
+        }
+    }
+    val elapsedMinutes = now.hour * 60 + now.minute
+    val remainingMinutes = (24 * 60 - elapsedMinutes).coerceAtLeast(0)
+    val elapsedStr = "%02d:%02d".format(elapsedMinutes / 60, elapsedMinutes % 60)
+    val remainingStr = "%02d:%02d".format(remainingMinutes / 60, remainingMinutes % 60)
 
     Scaffold(
         topBar = {
@@ -67,7 +84,18 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("O'tgan", style = MaterialTheme.typography.bodySmall)
+                    Text(elapsedStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Qolgan", style = MaterialTheme.typography.bodySmall)
+                    Text(remainingStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                }
+            }
+            Spacer(Modifier.height(16.dp))
             WaterProgressRing(
                 totalMl = state.totalMl,
                 goalMl = state.goalMl,
@@ -153,40 +181,6 @@ fun GoalDialog(currentGoal: Int, onDismiss: () -> Unit, onConfirm: (Int) -> Unit
                 val value = text.toIntOrNull()
                 if (value != null && value > 0) onConfirm(value)
             }) { Text("Saqlash") }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Bekor qilish") } }
-    )
-}
-
-@Composable
-fun CustomAmountDialog(onDismiss: () -> Unit, onConfirm: (Int, Boolean) -> Unit) {
-    var text by remember { mutableStateOf("") }
-    var isSubtract by remember { mutableStateOf(false) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Miqdor kiriting") },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { input -> text = input.filter { it.isDigit() } },
-                    label = { Text("Miqdor (ml)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
-                )
-                Spacer(Modifier.height(12.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Ayirish sifatida qo'shish")
-                    Spacer(Modifier.width(8.dp))
-                    Switch(checked = isSubtract, onCheckedChange = { isSubtract = it })
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                val amount = text.toIntOrNull()
-                if (amount != null && amount > 0) onConfirm(amount, isSubtract)
-            }) { Text("Tasdiqlash") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Bekor qilish") } }
     )

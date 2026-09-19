@@ -16,6 +16,8 @@ android {
         versionName = "1.0"
     }
 
+    // Bitta doimiy keystore - debug va release bir xil kalit bilan imzolanadi,
+    // shunda qayta build/yangilashda "signature mismatch" xatosi chiqmaydi.
     signingConfigs {
         create("release") {
             storeFile = file("${rootProject.projectDir}/keystore/release.keystore")

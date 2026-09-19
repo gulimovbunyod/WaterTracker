@@ -24,19 +24,20 @@ data class HomeUiState(
 
 class HomeViewModel(private val repository: WaterRepository) : ViewModel() {
 
-    // Vaqt o'tishi bilan ham (yangi suv qo'shilmasa ham) holat yangilanib tursin
-    // deb har daqiqada "tick" beruvchi flow.
-    private val ticker = flow {
+    // Status/rang hisob-kitobi uchun soatlik "tick" - vaqt o'tishi bilan
+    // (yangi suv qo'shilmasa ham) holat yangilanib tursin. Bu ekrandagi
+    // "o'tgan/qolgan vaqt" hisoblagichidan MUSTAQIL, alohida ishlaydi.
+    private val statusTicker = flow {
         while (true) {
             emit(Unit)
-            delay(60_000)
+            delay(3_600_000) // 1 soat
         }
     }
 
     val uiState: StateFlow<HomeUiState> = combine(
         repository.todayRecordFlow(),
         repository.goalFlow,
-        ticker
+        statusTicker
     ) { record, goal, _ ->
         val total = record?.totalMl ?: 0
         HomeUiState(

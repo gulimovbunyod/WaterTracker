@@ -16,14 +16,31 @@ barcha ma'lumot faqat qurilmangizda (Room DB) saqlanadi.
 
 ## Rang mantig'i (yashil/qizil)
 
-**Bugungi kun (hali tugamagan):** kun davomidagi vaqtga mutanosib baholanadi —
-meyor 24 soatga taqsimlanadi va shu daqiqagacha "kutilayotgan" miqdor bilan
-solishtiriladi. Masalan ertalab soat 6 da meyorning 1/4 qismini ichgan bo'lsangiz
-— bu me'yorda (yashil) hisoblanadi, chunki kun hali davom etyapti. Agar shu
-vaqtga nisbatan orqada qolsangiz — qizil ko'rsatiladi.
+**Bugungi kun (hali tugamagan):** meyor 24 soatga taqsimlanadi (masalan 2000ml
+bo'lsa soatiga ~83ml). Shu daqiqagacha "kutilishi kerak bo'lgan" miqdor
+hisoblanadi va agar siz shundan kamida **80%ini** ichgan bo'lsangiz — yashil.
+Kamroq bo'lsa — qizil. Bu hisoblash har soatda yangilanadi (batareyani tejash
+uchun), lekin suv qo'shsangiz darhol qayta hisoblanadi.
 
-**Tugagan kunlar (statistikada):** belgilangan meyordan ±1 litr (±1000 ml)
-oralig'ida bo'lsa — yashil (normal). Undan ko'p kam yoki ko'p bo'lsa — qizil.
+**Tugagan kunlar (statistikada):** kun tugagach, yakuniy natija tekshiriladi —
+belgilangan meyordan ko'pi bilan **500ml kam** yoki **1 litr ko'p** bo'lsa —
+hali ham yashil (normal) hisoblanadi. Undan tashqarida bo'lsa — qizil.
+
+**Joriy kun statistikada ko'rinmaydi** — kun hali davom etayotganda faqat Bosh
+sahifada kuzatiladi, faqat kun tugagach (yangi kun boshlanganda) avtomatik
+ravishda Statistika ro'yxatiga qo'shiladi.
+
+## Kunlarni tahrirlash
+
+Statistika bo'limida faqat **kecha** va **kechadan oldingi kun** uchun suv
+miqdorini qo'shish/ayirish mumkin (kichik qalam ikonkasi orqali). Sanalar
+"Kecha" deb va undan oldingilari "13/01/2026" ko'rinishida ko'rsatiladi.
+
+## Vaqt hisoblagichi
+
+Bosh sahifada kun boshidan (00:00) o'tgan va tungacha (24:00) qolgan vaqt
+soat:daqiqa (HH:MM) formatida, har daqiqada yangilanib turadi. Bu hisoblagich
+rang/status hisob-kitobidan butunlay mustaqil ishlaydi.
 
 ## Ma'lumotlar xavfsizligi
 
